@@ -2408,103 +2408,24 @@ Jsonix.Schema.XSD.Boolean.INSTANCE.LIST = new Jsonix.Schema.XSD.List(Jsonix.Sche
  */
 Jsonix.Schema.XSD.Base64Binary = Jsonix.Class(Jsonix.Schema.XSD.AnySimpleType, {
     typeName: Jsonix.Schema.XSD.qname("base64Binary"),
-    charToByte: {},
-    byteToChar: [],
     initialize: function() {
         Jsonix.Schema.XSD.AnySimpleType.prototype.initialize.apply(this);
-        // Initialize charToByte and byteToChar table for fast
-        // lookups
-        var charTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        for (var i = 0; i < charTable.length; i++) {
-            var _char = charTable.charAt(i);
-            var _byte = charTable.charCodeAt(i);
-            this.byteToChar[i] = _char;
-            this.charToByte[_char] = i;
-        }
     },
     print: function(value) {
-        Jsonix.Util.Ensure.ensureArray(value);
         return this.encode(value);
     },
     parse: function(text) {
         Jsonix.Util.Ensure.ensureString(text);
         return this.decode(text);
     },
-    encode: function(uarray) {
-        var output = "";
-        var byte0;
-        var byte1;
-        var byte2;
-        var char0;
-        var char1;
-        var char2;
-        var char3;
-        var i = 0;
-        var j = 0;
-        var length = uarray.length;
-        for (i = 0; i < length; i += 3) {
-            byte0 = uarray[i] & 255;
-            char0 = this.byteToChar[byte0 >> 2];
-            if (i + 1 < length) {
-                byte1 = uarray[i + 1] & 255;
-                char1 = this.byteToChar[(byte0 & 3) << 4 | byte1 >> 4];
-                if (i + 2 < length) {
-                    byte2 = uarray[i + 2] & 255;
-                    char2 = this.byteToChar[(byte1 & 15) << 2 | byte2 >> 6];
-                    char3 = this.byteToChar[byte2 & 63];
-                } else {
-                    char2 = this.byteToChar[(byte1 & 15) << 2];
-                    char3 = "=";
-                }
-            } else {
-                char1 = this.byteToChar[(byte0 & 3) << 4];
-                char2 = "=";
-                char3 = "=";
-            }
-            output = output + char0 + char1 + char2 + char3;
-        }
-        return output;
+    encode: function(value) {
+        return value.toString("base64");
     },
     decode: function(text) {
-        input = text.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-        var length = input.length / 4 * 3;
-        if (input.charAt(input.length - 1) === "=") {
-            length--;
-        }
-        if (input.charAt(input.length - 2) === "=") {
-            length--;
-        }
-        var uarray = new Array(length);
-        var byte0;
-        var byte1;
-        var byte2;
-        var char0;
-        var char1;
-        var char2;
-        var char3;
-        var i = 0;
-        var j = 0;
-        for (i = 0; i < length; i += 3) {
-            // get the 3 octects in 4 ascii chars
-            char0 = this.charToByte[input.charAt(j++)];
-            char1 = this.charToByte[input.charAt(j++)];
-            char2 = this.charToByte[input.charAt(j++)];
-            char3 = this.charToByte[input.charAt(j++)];
-            byte0 = char0 << 2 | char1 >> 4;
-            byte1 = (char1 & 15) << 4 | char2 >> 2;
-            byte2 = (char2 & 3) << 6 | char3;
-            uarray[i] = byte0;
-            if (char2 != 64) {
-                uarray[i + 1] = byte1;
-            }
-            if (char3 != 64) {
-                uarray[i + 2] = byte2;
-            }
-        }
-        return uarray;
+        return new Buffer(text, "base64");
     },
     isInstance: function(value) {
-        return Jsonix.Util.Type.isArray(value);
+        return Buffer.isBuffer(value);
     },
     CLASS_NAME: "Jsonix.Schema.XSD.Base64Binary"
 });
@@ -2544,50 +2465,21 @@ Jsonix.Schema.XSD.Base64Binary.INSTANCE.LIST = new Jsonix.Schema.XSD.List(Jsonix
  */
 Jsonix.Schema.XSD.HexBinary = Jsonix.Class(Jsonix.Schema.XSD.AnySimpleType, {
     typeName: Jsonix.Schema.XSD.qname("hexBinary"),
-    charToQuartet: {},
-    byteToDuplet: [],
     initialize: function() {
         Jsonix.Schema.XSD.AnySimpleType.prototype.initialize.apply(this);
-        var charTableUpperCase = "0123456789ABCDEF";
-        var charTableLowerCase = charTableUpperCase.toLowerCase();
-        var i;
-        for (i = 0; i < 16; i++) {
-            this.charToQuartet[charTableUpperCase.charAt(i)] = i;
-            if (i >= 10) {
-                this.charToQuartet[charTableLowerCase.charAt(i)] = i;
-            }
-        }
-        for (i = 0; i < 256; i++) {
-            this.byteToDuplet[i] = //
-            charTableUpperCase[i >> 4] + charTableUpperCase[i & 15];
-        }
     },
     print: function(value) {
-        Jsonix.Util.Ensure.ensureArray(value);
         return this.encode(value);
     },
     parse: function(text) {
         Jsonix.Util.Ensure.ensureString(text);
         return this.decode(text);
     },
-    encode: function(uarray) {
-        var output = "";
-        for (var i = 0; i < uarray.length; i++) {
-            output = output + this.byteToDuplet[uarray[i] & 255];
-        }
-        return output;
+    encode: function(value) {
+        return value.toString("hex");
     },
     decode: function(text) {
-        var input = text.replace(/[^A-Fa-f0-9]/g, "");
-        // Round by two
-        var length = input.length >> 1;
-        var uarray = new Array(length);
-        for (var i = 0; i < length; i++) {
-            var char0 = input.charAt(2 * i);
-            var char1 = input.charAt(2 * i + 1);
-            uarray[i] = this.charToQuartet[char0] << 4 | this.charToQuartet[char1];
-        }
-        return uarray;
+        return new Buffer(text, "hex");
     },
     isInstance: function(value) {
         return Jsonix.Util.Type.isArray(value);
