@@ -1,0 +1,25 @@
+{
+  "name": "jsonix-smart",
+  "version": "0.0.0",
+  "description": "Jsonix with some smarts",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/deoxxa/jsonix-smart.git"
+  },
+  "bin": {
+    "jsonix-convert-mappings": "./bin/convert-mappings.js"
+  },
+  "author": "Conrad Pankoff <deoxxa@fknsrs.biz> (http://www.fknsrs.biz/)",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/deoxxa/jsonix-smart/issues"
+  },
+  "dependencies": {
+    "xmldom": "~0.1.16",
+    "esprima": "~1.0.4",
+    "escodegen": "~1.0.0",
+    "dotty": "0.0.2",
+    "async": "~0.2.9"
+  }
+}
