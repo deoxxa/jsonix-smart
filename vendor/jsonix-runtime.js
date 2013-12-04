@@ -3717,6 +3717,10 @@ Jsonix.Schema.XSD.Calendar = Jsonix.Class(Jsonix.Schema.XSD.AnySimpleType, {
         }
     },
     print: function(value) {
+        // edited!
+        if (typeof value === "string") {
+            return value;
+        }
         Jsonix.Util.Ensure.ensureObject(value);
         if (Jsonix.Util.NumberUtils.isInteger(value.year) && Jsonix.Util.NumberUtils.isInteger(value.month) && Jsonix.Util.NumberUtils.isInteger(value.day) && Jsonix.Util.NumberUtils.isInteger(value.hour) && Jsonix.Util.NumberUtils.isInteger(value.minute) && Jsonix.Util.NumberUtils.isInteger(value.second)) {
             return this.printDateTime(value);
