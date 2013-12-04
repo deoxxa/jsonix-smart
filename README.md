@@ -34,7 +34,7 @@ against [SVN revision 277](svn://svn.code.sf.net/p/jsonix/code/trunk@277). This
 SVN revision is also where the code in the vendor directory came from.
 
 After you generate mappings, you'll have to process them with the
-`convert-mapping` program included with Jsonix-Smart.
+`jsonix-convert-mappings` program included with Jsonix-Smart.
 
 Consider the documentation here to be lazily evaluated. If someone ever finds
 and wants to use this, bug me and I'll write some docs and answer your
