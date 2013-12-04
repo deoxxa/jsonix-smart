@@ -5529,7 +5529,6 @@ Jsonix.Model.ElementsPropertyInfo = Jsonix.Class(Jsonix.Model.AbstractElementsPr
                 return;
             }
         }
-        console.log(value);
         throw new Error("Could not find an element with type info supporting the value [" + value + "].");
     },
     buildStructureElements: function(context, structure) {
