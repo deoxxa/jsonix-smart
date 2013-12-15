@@ -1,6 +1,6 @@
 {
   "name": "jsonix-smart",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Jsonix with some smarts",
   "main": "index.js",
   "repository": {
